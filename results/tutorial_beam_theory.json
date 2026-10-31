@@ -1,0 +1,20 @@
+{
+  "method": "Euler-Bernoulli cantilever theory; no FE solve",
+  "inputs": {
+    "width_mm": 20,
+    "height_mm": 25,
+    "wall_mm": 2,
+    "length_mm": 180,
+    "force_N": 20,
+    "modulus_MPa": 70000,
+    "density_g_cm3": 2.7
+  },
+  "results": {
+    "area_mm2": 164,
+    "inertia_mm4": 13693.666666666668,
+    "stiffness_N_mm": 493.0847050754459,
+    "deflection_mm": 0.04056098231020944,
+    "nominal_stress_MPa": 3.286190696429006,
+    "arm_mass_g": 79.704
+  }
+}

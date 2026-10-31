@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "study_id": "petg_box_arm_v1",
+  "frozen": false,
+  "sources": {
+    "plan": "docs/PLAN.md section 3",
+    "assumptions": "docs/assumptions.md",
+    "material": "https://prusament.com/wp-content/uploads/2022/10/PETG_Prusament_TDS_2021_10_EN.pdf",
+    "material_version": "1.1, 2022-02-16, horizontal printed specimens"
+  },
+  "units": {
+    "length": "mm", "force": "N", "stress": "MPa",
+    "time": "s", "solver_mass": "tonne", "density": "tonne/mm^3",
+    "reported_mass": "g", "moment": "N*mm", "frequency": "Hz"
+  },
+  "reference": {
+    "vehicle_class_mm": 450,
+    "takeoff_mass_kg": 1.5,
+    "gravity_m_s2": 9.81,
+    "motor_count": 4,
+    "hover_thrust_N": 3.7,
+    "motor_description": "generic 2212-size 920 KV; datasheet not selected",
+    "propeller_inches": [10.0, 4.5],
+    "blade_count": 2,
+    "hover_rpm": [4500, 6000],
+    "maximum_rpm": 8000,
+    "status": "planning assumptions; hover thrust rounded to 0.1 N"
+  },
+  "interfaces": {
+    "reach_mm": 200.0,
+    "outer_width_mm": 20.0,
+    "tip_mass_g": 70.0,
+    "axes": {"x": "along arm", "y": "lateral", "z": "motor axis"},
+    "origin": "root-pad free face; motor axis at x=reach_mm",
+    "root_pad": {
+      "length_mm": 30.0,
+      "width_mm": null, "height_mm": null, "bolt_layout": null
+    },
+    "motor_pad": {
+      "length_mm": 25.0, "width_mm": 25.0, "thickness_mm": null,
+      "mass_model": "density adjusted to tip_mass_g; do not add a second tip mass"
+    }
+  },
+  "material": {
+    "name": "unfilled PETG",
+    "reference_grade": "Prusament PETG",
+    "process": "FDM/FFF",
+    "model": "isotropic_linear_elastic",
+    "youngs_modulus_MPa": 1500.0,
+    "poisson_ratio": 0.38,
+    "density_g_cm3": 1.27,
+    "density_kg_m3": 1270.0,
+    "density_tonne_mm3": 1.27e-9,
+    "yield_reference_MPa": 47.0,
+    "interlayer_adhesion_MPa": 18.0,
+    "status": "TDS reference proposal; Poisson ratio assumed; actual filament/printer open"
+  },
+  "geometry": {
+    "family": "rectangular_box_with_side_wall_holes",
+    "parameter_order": ["t_mm", "h_mm", "r"],
+    "ranges": {"t_mm": [1.6, 3.2], "h_mm": [18.0, 30.0], "r": [0.0, 0.7]},
+    "baseline": {"t_mm": 2.5, "h_mm": 25.0, "r": 0.4},
+    "holes_per_side": 4,
+    "hole_ratio_definition": "diameter / (h_mm - 2*t_mm)",
+    "hole_centre_span_fraction": [0.15, 0.85],
+    "no_holes_when_r_zero": true,
+    "validity": {
+      "minimum_ligament_mm": 2.0,
+      "minimum_nonzero_hole_diameter_mm": 3.0,
+      "minimum_internal_height_mm": 6.0,
+      "minimum_wall_mm": 1.6
+    },
+    "status": "provisional; not every point in the rectangular bounds is geometrically valid"
+  },
+  "factors": {"thrust_load_factor": 2.0, "material_process_factor": 2.0},
+  "loads": {
+    "LC1": {"force_N": [0.0, 0.0, 7.4], "application": "pressure on motor-pad top", "role": "dataset and search", "load_factor_included": true},
+    "LC2": {"force_N": [0.0, 5.0, 0.0], "application": "motor pad", "role": "sensitivity"},
+    "LC3": {"moment_Nmm": [0.0, 0.0, 13.0], "application": "about motor z axis", "role": "sensitivity"}
+  },
+  "supports": {
+    "default": "A",
+    "A": "root-pad faces contacting frame fixed; identify geometrically",
+    "B": "bolt-hole surfaces fixed; bolt geometry not yet specified"
+  },
+  "limits": {
+    "tip_deflection_mm": 2.0,
+    "body_stress_MPa": 23.5,
+    "stress_exclusion_beyond_root_face_mm": 5.0,
+    "search_load_case": "LC1",
+    "modal_constraint_enabled": false
+  },
+  "modal": {
+    "mode_count": 6,
+    "hover_1p_band_Hz": [75.0, 100.0],
+    "hover_blade_pass_band_Hz": [150.0, 200.0],
+    "separation_fraction": 0.2,
+    "separation_normalisation": null,
+    "check": "f1 against hover 1P with 20% separation; report f2-f3 against blade pass; below-band allowed"
+  },
+  "mesh": {
+    "element": "C3D10",
+    "wall_size_over_thickness": 0.5,
+    "hole_refinement_factor": null,
+    "convergence_mesh_count": 3,
+    "relative_change_limits": {"u_tip_mm": 0.02, "f1_Hz": 0.02, "sigma_hole_MPa": 0.05}
+  },
+  "outputs": {
+    "u_tip_mm": "motor-pad-centre z displacement under LC1",
+    "sigma_body_MPa": "maximum von Mises outside documented root-face exclusion zone",
+    "sigma_hole_MPa": "maximum von Mises on hole-edge surfaces",
+    "frequencies": ["f1_Hz", "f2_Hz", "f3_Hz", "f4_Hz", "f5_Hz", "f6_Hz"],
+    "mode1_type": "dominant vertical, lateral or torsional motion",
+    "mass_g": "closed-form mass checked against CAD; pad accounting to resolve in Gate 1",
+    "no_hole_stress_convention": null,
+    "provenance": ["t_solve_s", "n_elements", "status", "failure_reason", "os", "ccx_version", "config_hash"]
+  },
+  "seeds": {"sampling": 0, "split": 42, "cv": 42, "models": 42, "design_search": 0},
+  "solver": {"executable": null, "omp_num_threads": 1, "version_probe_timeout_s": 15.0}
+}

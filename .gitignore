@@ -1,0 +1,33 @@
+.DS_Store
+.obsidian/
+# Local course materials, internal plans and agent instructions.
+/docs/
+AGENTS.md
+AGENTS.override.md
+# Diagnostic logs may contain local usernames and absolute paths.
+/results/doctor_*.txt
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+envs/
+.env
+.env.*
+outputs/
+data/raw/
+*.msh
+*.inp
+*.dat
+*.frd
+*.sta
+*.cvg
+*.step
+*.stp
+*.stl
+# Small final exports may be committed later, per AGENTS.md.
+!results/export/*.step
+!results/export/*.stl

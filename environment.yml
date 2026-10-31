@@ -1,0 +1,20 @@
+name: drone-ai
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.12
+  - cadquery
+  - gmsh
+  - python-gmsh  # conda-forge packages the Python bindings separately; see README.md
+  - calculix
+  - scikit-learn
+  - scipy
+  - pandas
+  - matplotlib
+  - pytest
+  # Packaging tools only; documented in README.md.
+  - pip
+  - setuptools
+variables:
+  OMP_NUM_THREADS: "1"
